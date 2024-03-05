@@ -1,10 +1,19 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { FeedController } from './feed/feed.controller';
+import { FeedService } from './feed/feed.service';
+import { MypageController } from './mypage/mypage.controller';
+import { MypageService } from './mypage/mypage.service';
+import { LoginController } from './login/login.controller';
+import { LoginService } from './login/login.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { FeedModule } from './feed/feed.module';
+import { Feed, FeedSchema } from './feed/schemas/feed.schema';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [MongooseModule.forFeature([{ name: Feed.name, schema: FeedSchema}]), MongooseModule.forRoot('mongodb://127.0.0.1:27017/coment')],
+  controllers: [AppController, FeedController, MypageController, LoginController],
+  providers: [AppService, FeedService, MypageService, LoginService],
 })
 export class AppModule {}
