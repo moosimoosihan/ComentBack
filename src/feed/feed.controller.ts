@@ -8,7 +8,7 @@ export class FeedController {
   constructor(private readonly feedService: FeedService) {}
 
   @Post()
-  async create(@Body() feed: Feed): Promise<Feed> {
+  async createFeed(@Body() feed: Feed): Promise<Feed> {
     return this.feedService.create(feed);
   }
 
