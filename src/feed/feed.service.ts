@@ -25,6 +25,7 @@ export class FeedService {
 
   // 피드 수정
   async update(id: string, feed: Feed): Promise<Feed> {
+    feed.updatedAt = new Date;
     return this.feedModel.findByIdAndUpdate(id, feed, { new: true });
   }
 
