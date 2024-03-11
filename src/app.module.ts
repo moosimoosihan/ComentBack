@@ -13,7 +13,7 @@ import { Feed, FeedSchema } from './feed/schemas/feed.schema';
 import { Like, LikeSchema } from './feed/schemas/like.schema';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Feed.name, schema: FeedSchema}, {name: Like.name, schema: LikeSchema}]), MongooseModule.forRoot('mongodb://ezen:1234@localhost:27017/?authMechanism=DEFAULT')],
+  imports: [MongooseModule.forFeature([{ name: Feed.name, schema: FeedSchema}, {name: Like.name, schema: LikeSchema}]), MongooseModule.forRoot('mongodb://127.0.0.1:27017/coment')],
   controllers: [AppController, FeedController, MypageController, LoginController],
   providers: [AppService, FeedService, MypageService, LoginService],
 })
