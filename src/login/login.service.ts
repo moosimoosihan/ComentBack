@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import axios from 'axios';
+import { Model } from 'mongoose';
 import { firstValueFrom, from } from 'rxjs';
+import { User, UserDocument } from 'src/feed/schemas/user.schema';
 
 @Injectable()
 export class LoginService {
-  constructor() {}
-  static async kakaoLogin(apikey: string, redirectUri: string, code: string) {
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  async kakaoLogin(apikey: string, redirectUri: string, code: string) {
     const config = {
       grant_type: 'authorization_code',
       client_id: apikey,
@@ -26,8 +29,20 @@ export class LoginService {
       const { data } = await firstValueFrom(
         from(axios.get(userInfoUrl, { headers: userInfoHeaders })),
       );
-      console.log(data);
+      this.login(data);
     });
+  }
+  async login(data: any) {
+    if(this.userModel.findOne({ email: data.kakao_account.email, socialType: 'kakao'})) {
+      this.userModel.findOne({ email: data.kakao_account.email, socialType: 'kakao'});
+    } else {
+      const user = new this.userModel({
+        email: data.kakao_account.email,
+        nickname: data.kakao_account.profile.nickname,
+        socialType: 'kakao',
+      });
+      user.save();
+    }
   }
 }
 
