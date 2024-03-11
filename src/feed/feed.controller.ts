@@ -24,24 +24,24 @@ export class FeedController {
   }
 
   // 특정 피드 조회
-  @Get('/:id')
-  async findOne(@Param('id') id: string): Promise<Feed> {
-    return this.feedService.findOne(id);
+  @Get('/:feed_id')
+  async findOne(@Param('feed_id') feed_id: string): Promise<Feed> {
+    return this.feedService.findOne(feed_id);
   }
 
   // 피드 수정
-  @Post('/:id')
-  async update(@Param('id') id: string, @Body() feed: Feed, @Res() res: Response): Promise<Feed> {
-    const updatedFeed = this.feedService.update(id, feed);
+  @Post('/:feed_id')
+  async update(@Param('feed_id') feed_id: string, @Body() feed: Feed, @Res() res: Response): Promise<Feed> {
+    const updatedFeed = this.feedService.update(feed_id, feed);
     res.location('http://localhost:3000/'); // 주소는 나중에 수정
     res.status(HttpStatus.FOUND).send();
     return updatedFeed;
   }
 
   // 피드 삭제
-  @Post('/:id/delete')
-  async remove(@Param('id') id: string, @Res() res: Response): Promise<Feed> {
-    const removedFeed = this.feedService.remove(id);
+  @Post('/:feed_id/delete')
+  async remove(@Param('feed_id') feed_id: string, @Res() res: Response): Promise<Feed> {
+    const removedFeed = this.feedService.remove(feed_id);
     res.location('http://localhost:3000/'); // 주소는 나중에 수정
     res.status(HttpStatus.FOUND).send();
     return removedFeed;
@@ -51,5 +51,29 @@ export class FeedController {
   @Get('/category/:category')
   async findByCategory(@Param('category') category: string): Promise<Feed[]> {
     return this.feedService.findByCategory(category);
+  }
+
+  // 피드 검색
+  @Get('/search/:keyword')
+  async search(@Param('keyword') keyword: string): Promise<Feed[]> {
+    return this.feedService.search(keyword);
+  }
+
+  // 피드 좋아요
+  @Post('/like/:feed_id/:user_id')
+  async like(@Param('feed_id') feed_id: string, @Param('user_id') user_id: string){
+    this.feedService.like(feed_id, user_id);
+  }
+
+  // 피드 좋아요 취소
+  @Post('/unlike/:feed_id/:user_id')
+  async unlike(@Param('feed_id') feed_id: string, @Param('user_id') user_id: string){
+    this.feedService.unlike(feed_id, user_id);
+  }
+
+  // 좋아요 수 조회
+  @Get('/like/:feed_id')
+  async getLikeCount(@Param('feed_id') feed_id: string): Promise<number> {
+    return this.feedService.countLikes(feed_id);
   }
 }
