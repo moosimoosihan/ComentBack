@@ -43,5 +43,9 @@ export class LoginService {
     });
     return user.save();
   }
+
+  async getUserInfo(token: string): Promise<UserDocument> {
+    return this.userModel.findOne({ _id: token });
+  }
 }
 

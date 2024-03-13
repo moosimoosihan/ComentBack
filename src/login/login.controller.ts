@@ -1,4 +1,4 @@
-import { Controller, Get, Header, HttpStatus, Query, Res } from '@nestjs/common';
+import { Body, Controller, Get, Header, HttpStatus, Post, Query, Req, Res } from '@nestjs/common';
 import { Response } from 'express'
 import { LoginService } from './login.service';
 
@@ -22,5 +22,11 @@ export class LoginController {
     res.cookie('jwt', user._id, { httpOnly: false });
     res.location('http://localhost:3000/');
     res.status(HttpStatus.FOUND).send();
+  }
+
+  @Post('userInfo')
+  async getUserInfo(@Req() req, @Res() res:Response) {
+    const user = await this.loginService.getUserInfo(req.body.token);
+    res.send(user);
   }
 }
