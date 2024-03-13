@@ -33,16 +33,15 @@ export class LoginService {
     return this.login(user);
   }
   async login(data: any) : Promise<UserDocument> {
-    if(this.userModel.findOne({ email: data.kakao_account.email, socialType: 'kakao'})) {
-      return this.userModel.findOne({ email: data.kakao_account.email, socialType: 'kakao'});
-    } else {
-      const user = new this.userModel({
-        email: data.kakao_account.email,
-        nickname: data.kakao_account.profile.nickname,
-        socialType: 'kakao',
-      });
-      return user.save();
-    }
+    // 만약 가입된 유저라면 해당 유저를 반환
+    let user = await this.userModel.findOne({ email: data.kakao_account.email });
+    if (user) return user;
+    user = new this.userModel({
+      email: data.kakao_account.email,
+      nickname: data.kakao_account.profile.nickname,
+      socialType: 'kakao',
+    });
+    return user.save();
   }
 }
 
