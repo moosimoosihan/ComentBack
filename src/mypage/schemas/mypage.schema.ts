@@ -2,6 +2,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
+export type PostDocument = Post & Document;
+
 @Schema({ timestamps: true }) // createdAt과 updatedAt을 자동으로 관리합니다.
 export class Post {
   @Prop()
@@ -21,4 +23,3 @@ export class Post {
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
-export type PostDocument = Post & Document;

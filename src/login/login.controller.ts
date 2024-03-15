@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Header, HttpStatus, Post, Query, Req, Res } from '@nestjs/common';
-import { Controller, Get, Header, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { LoginService } from './login.service';
 
