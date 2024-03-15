@@ -17,7 +17,7 @@ export class FeedService {
 
   // 모든 피드 조회
   async findAll(): Promise<Feed[]> {
-    return this.feedModel.find().populate('user_id');
+    return this.feedModel.find().where('deletedAt').equals(undefined).populate('user_id');
   }
 
   // 특정 피드 조회
@@ -48,7 +48,7 @@ export class FeedService {
 
   // 카테고리별 피드 조회
   async findByCategory(category: string): Promise<Feed[]> {
-    return this.feedModel.find({ category: category });
+    return this.feedModel.find({ category: category }).where('deletedAt').equals(undefined).populate('user_id');
   }
 
   // 피드 검색
