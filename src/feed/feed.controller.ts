@@ -1,8 +1,8 @@
 import { Controller, Post, Body, Get, Res, HttpStatus, Param } from '@nestjs/common';
 import { FeedService } from './feed.service';
-import { Feed } from './schemas/feed.schema';
+import { Feed } from '../schemas/feed.schema';
 import { Response } from 'express';
-import { CreateFeedDto } from './createFeed.dto';
+import { CreateFeedDto } from '../Dto/createFeed.dto';
 
 @Controller('feed')
 export class FeedController {

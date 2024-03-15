@@ -1,16 +1,16 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 
 export type LikeDocument = Like & Document;
 
 @Schema()
 export class Like {
 
-  @Prop({required: true})
-  user_id: String;
+  @Prop({required: true, ref: 'User'})
+  user_id: Types.ObjectId;
 
-  @Prop({required: true})
-  feed_id: String;
+  @Prop({required: true, ref: 'Feed'})
+  feed_id: Types.ObjectId;
 }
 
 export const LikeSchema = SchemaFactory.createForClass(Like);

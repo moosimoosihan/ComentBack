@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 import { CommentSchema } from "./comment.schema";
 
 export type FeedDocument = Feed & Document;
@@ -7,8 +7,8 @@ export type FeedDocument = Feed & Document;
 @Schema()
 export class Feed {
 
-  @Prop()
-  user_id: String;
+  @Prop({type:Types.ObjectId,ref:'User'})
+  user_id: Types.ObjectId;
 
   @Prop()
   title: String;

@@ -1,11 +1,11 @@
 import { IsNotEmpty, IsString } from "class-validator";
+import { ObjectId } from "mongoose";
 
 
 export class CreateFeedDto {
 
   @IsNotEmpty()
-  @IsString()
-  readonly user_id: string;
+  readonly user_id: ObjectId;
 
   @IsNotEmpty()
   @IsString()

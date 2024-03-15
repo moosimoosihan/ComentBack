@@ -3,7 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import axios from 'axios';
 import { Model } from 'mongoose';
 import { firstValueFrom, from } from 'rxjs';
-import { User, UserDocument } from 'src/feed/schemas/user.schema';
+import { User, UserDocument } from '../schemas/user.schema';
+import { CreateUserDto } from 'src/Dto/createUser.dto';
 
 @Injectable()
 export class LoginService {

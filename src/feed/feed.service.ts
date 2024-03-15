@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Feed, FeedDocument } from './schemas/feed.schema';
-import { Like, LikeDocument } from './schemas/like.schema';
-import { CreateFeedDto } from './createFeed.dto';
+import { Feed, FeedDocument } from '../schemas/feed.schema';
+import { Like, LikeDocument } from '../schemas/like.schema';
+import { CreateFeedDto } from '../Dto/createFeed.dto';
 
 @Injectable()
 export class FeedService {
@@ -17,7 +17,7 @@ export class FeedService {
 
   // 모든 피드 조회
   async findAll(): Promise<Feed[]> {
-    return this.feedModel.find().exec();
+    return this.feedModel.find().populate('user_id');
   }
 
   // 특정 피드 조회
