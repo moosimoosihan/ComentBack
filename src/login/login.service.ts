@@ -4,7 +4,6 @@ import axios from 'axios';
 import { Model } from 'mongoose';
 import { firstValueFrom, from } from 'rxjs';
 import { User, UserDocument } from '../schemas/user.schema';
-import { CreateUserDto } from 'src/Dto/createUser.dto';
 
 @Injectable()
 export class LoginService {
