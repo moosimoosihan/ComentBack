@@ -8,11 +8,10 @@ import { User, UserDocument } from 'src/feed/schemas/user.schema';
 @Injectable()
 export class LoginService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
-  async kakaoLogin(apikey: string, redirectUri: string, code: string) {
+  async kakaoLogin(apikey: string, code: string): Promise<UserDocument>{
     const config = {
       grant_type: 'authorization_code',
       client_id: apikey,
-      redirect_uri: redirectUri,
       code,
     };
     const params = new URLSearchParams(config).toString();
@@ -21,7 +20,7 @@ export class LoginService {
     };
     const tokenUrl = `https://kauth.kakao.com/oauth/token?`
 
-    await axios.post(tokenUrl, params, { headers: tokenHeaders }).then(async (res) => {
+    const user =await axios.post(tokenUrl, params, { headers: tokenHeaders }).then(async (res) => {
       const userInfoUrl = `https://kapi.kakao.com/v2/user/me`;
       const userInfoHeaders = {
         Authorization: `Bearer ${res.data.access_token}`,
@@ -29,20 +28,24 @@ export class LoginService {
       const { data } = await firstValueFrom(
         from(axios.get(userInfoUrl, { headers: userInfoHeaders })),
       );
-      this.login(data);
+      return data;
     });
+    return this.login(user);
   }
-  async login(data: any) {
-    if(this.userModel.findOne({ email: data.kakao_account.email, socialType: 'kakao'})) {
-      this.userModel.findOne({ email: data.kakao_account.email, socialType: 'kakao'});
-    } else {
-      const user = new this.userModel({
-        email: data.kakao_account.email,
-        nickname: data.kakao_account.profile.nickname,
-        socialType: 'kakao',
-      });
-      user.save();
-    }
+  async login(data: any) : Promise<UserDocument> {
+    // 만약 가입된 유저라면 해당 유저를 반환
+    let user = await this.userModel.findOne({ email: data.kakao_account.email });
+    if (user) return user;
+    user = new this.userModel({
+      email: data.kakao_account.email,
+      nickname: data.kakao_account.profile.nickname,
+      socialType: 'kakao',
+    });
+    return user.save();
+  }
+
+  async getUserInfo(token: string): Promise<UserDocument> {
+    return this.userModel.findOne({ _id: token });
   }
 }
 

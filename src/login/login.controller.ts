@@ -1,7 +1,7 @@
+import { Body, Controller, Get, Header, HttpStatus, Post, Query, Req, Res } from '@nestjs/common';
 import { Controller, Get, Header, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { LoginService } from './login.service';
-import { User } from 'src/feed/schemas/user.schema';
 
 @Controller('login')
 export class LoginController {
@@ -19,8 +19,15 @@ export class LoginController {
   @Get('kakao')
   async getKakaoInfo(@Query() query: { code }, @Res() res:Response) {
     const apikey = 'b18a55ea373df95fa3136d22d2e3fa7f';
-    const redirectUri = 'http://localhost:8000/login/kakao';
-    this.loginService.kakaoLogin(apikey, redirectUri, query.code);
+    const user = await this.loginService.kakaoLogin(apikey, query.code);
+    res.cookie('jwt', user._id, { httpOnly: false });
     res.location('http://localhost:3000/');
+    res.status(HttpStatus.FOUND).send();
+  }
+
+  @Post('userInfo')
+  async getUserInfo(@Req() req, @Res() res:Response) {
+    const user = await this.loginService.getUserInfo(req.body.token);
+    res.send(user);
   }
 }
