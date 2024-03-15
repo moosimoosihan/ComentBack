@@ -1,5 +1,22 @@
+import { IsNotEmpty, IsString } from "class-validator";
+
+
 export class CreateFeedDto {
-  readonly author: string;
+
+  @IsNotEmpty()
+  @IsString()
+  readonly user_id: string;
+
+  @IsNotEmpty()
+  @IsString()
   readonly title: string;
+
+  @IsNotEmpty()
+  @IsString()
+  readonly category: string;
+
+  @IsNotEmpty()
+  @IsString()
   readonly content: string;
+  
 }
