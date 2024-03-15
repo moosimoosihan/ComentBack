@@ -1,5 +1,5 @@
 import { Controller, Get, Header, Query, Res } from '@nestjs/common';
-import { Response } from 'express'
+import { Response } from 'express';
 import { LoginService } from './login.service';
 import { User } from 'src/feed/schemas/user.schema';
 

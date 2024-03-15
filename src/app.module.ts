@@ -14,7 +14,7 @@ import { Like, LikeSchema } from './feed/schemas/like.schema';
 import { User, UserSchema } from './feed/schemas/user.schema';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Feed.name, schema: FeedSchema}, {name: Like.name, schema: LikeSchema},{name:User.name,schema:UserSchema}]), MongooseModule.forRoot('mongodb://ezen:1234@localhost:27017/?authMechanism=DEFAULT')],
+  imports: [MongooseModule.forFeature([{ name: Feed.name, schema: FeedSchema}, {name: Like.name, schema: LikeSchema},{name:User.name,schema:UserSchema}]), MongooseModule.forRoot('mongodb://localhost:27017/coment')],
   controllers: [AppController, FeedController, MypageController, LoginController],
   providers: [AppService, FeedService, MypageService, LoginService],
 })
