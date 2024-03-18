@@ -4,6 +4,7 @@ import { Feed } from '../schemas/feed.schema';
 import { Response } from 'express';
 import { CreateFeedDto } from '../Dto/createFeed.dto';
 import { UpdateFeedDto } from '../Dto/updateFeed.dto';
+import { Like } from 'src/schemas/like.schema';
 
 @Controller('feed')
 export class FeedController {
@@ -59,6 +60,12 @@ export class FeedController {
   @Get('/search/:keyword')
   async search(@Param('keyword') keyword: string): Promise<Feed[]> {
     return this.feedService.search(keyword);
+  }
+
+  // 해당 유저가 좋아요를 했는지 여부 확인
+  @Get('/like/:feed_id/:user_id')
+  async isLiked(@Param('feed_id') feed_id: string, @Param('user_id') user_id: string): Promise<Like> {
+    return this.feedService.isLiked(feed_id, user_id);
   }
 
   // 피드 좋아요

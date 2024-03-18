@@ -56,6 +56,11 @@ export class FeedService {
     return this.feedModel.find({ title: { $regex: keyword } });
   }
 
+  // 해당 유저가 좋아요를 했는지 여부 확인
+  async isLiked(feed_id: string, user_id: string): Promise<Like> {
+    return this.likeModel.findOne({ feed_id: feed_id, user_id: user_id });
+  }
+
   // 피드 좋아요
   async like(feed_id: string, user_id: string){
     try{
