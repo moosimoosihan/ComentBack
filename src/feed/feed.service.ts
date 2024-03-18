@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { Feed, FeedDocument } from '../schemas/feed.schema';
 import { Like, LikeDocument } from '../schemas/like.schema';
 import { CreateFeedDto } from '../Dto/createFeed.dto';
+import { UpdateFeedDto } from '../Dto/updateFeed.dto';
 
 @Injectable()
 export class FeedService {
@@ -22,12 +23,11 @@ export class FeedService {
 
   // 특정 피드 조회
   async findOne(id: string): Promise<Feed> {
-    return this.feedModel.findById(id);
+    return await this.feedModel.findById(id).populate('user_id');
   }
 
   // 피드 수정
-  async update(id: string, feed: Feed): Promise<Feed> {
-    feed.updatedAt = new Date;
+  async update(id: string, feed: UpdateFeedDto): Promise<Feed> {
     return this.feedModel.findByIdAndUpdate(id, feed, { new: true });
   }
 

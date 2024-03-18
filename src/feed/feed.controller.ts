@@ -3,6 +3,7 @@ import { FeedService } from './feed.service';
 import { Feed } from '../schemas/feed.schema';
 import { Response } from 'express';
 import { CreateFeedDto } from '../Dto/createFeed.dto';
+import { UpdateFeedDto } from '../Dto/updateFeed.dto';
 
 @Controller('feed')
 export class FeedController {
@@ -32,7 +33,7 @@ export class FeedController {
 
   // 피드 수정
   @Post('/:feed_id')
-  async update(@Param('feed_id') feed_id: string, @Body() feed: Feed, @Res() res: Response): Promise<Feed> {
+  async update(@Param('feed_id') feed_id: string, @Body() feed: UpdateFeedDto, @Res() res: Response): Promise<Feed> {
     const updatedFeed = this.feedService.update(feed_id, feed);
     res.location('http://localhost:3000/'); // 주소는 나중에 수정
     res.status(HttpStatus.FOUND).send();
