@@ -7,7 +7,7 @@ import { CreateFeedDto } from '../Dto/createFeed.dto';
 @Controller('feed')
 export class FeedController {
 
-  constructor(private readonly feedService: FeedService) {}
+  constructor(private readonly feedService: FeedService) { }
 
   // 피드 생성
   @Post()
@@ -25,9 +25,9 @@ export class FeedController {
   }
 
   // 특정 피드 조회
-  @Get('/:feed_id')
-  async findOne(@Param('feed_id') feed_id: string): Promise<Feed> {
-    return this.feedService.findOne(feed_id);
+  @Get('/:user_id')
+  async findOne(@Param('user_id') userId: string): Promise<Feed> {
+    return this.feedService.findOne(userId);
   }
 
   // 피드 수정
@@ -62,13 +62,13 @@ export class FeedController {
 
   // 피드 좋아요
   @Post('/like/:feed_id/:user_id')
-  async like(@Param('feed_id') feed_id: string, @Param('user_id') user_id: string){
+  async like(@Param('feed_id') feed_id: string, @Param('user_id') user_id: string) {
     this.feedService.like(feed_id, user_id);
   }
 
   // 피드 좋아요 취소
   @Post('/unlike/:feed_id/:user_id')
-  async unlike(@Param('feed_id') feed_id: string, @Param('user_id') user_id: string){
+  async unlike(@Param('feed_id') feed_id: string, @Param('user_id') user_id: string) {
     this.feedService.unlike(feed_id, user_id);
   }
 
@@ -76,5 +76,11 @@ export class FeedController {
   @Get('/like/:feed_id')
   async getLikeCount(@Param('feed_id') feed_id: string): Promise<number> {
     return this.feedService.countLikes(feed_id);
+  }
+
+  // 특정 유저 피드 조회
+  @Get('/user/:user_id')
+  async getUserFeed(@Param('user_id') user_id: string): Promise<Feed[]> {
+    return this.feedService.findByUser(user_id);
   }
 }
