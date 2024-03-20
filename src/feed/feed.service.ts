@@ -8,7 +8,7 @@ import { UpdateFeedDto } from '../Dto/updateFeed.dto';
 
 @Injectable()
 export class FeedService {
-  constructor(@InjectModel(Feed.name) private feedModel: Model<FeedDocument>, @InjectModel(Like.name) private likeModel: Model<LikeDocument>) {}
+  constructor(@InjectModel(Feed.name) private feedModel: Model<FeedDocument>, @InjectModel(Like.name) private likeModel: Model<LikeDocument>) { }
 
   // 피드 생성
   async create(feed: CreateFeedDto): Promise<Feed> {
@@ -33,15 +33,15 @@ export class FeedService {
 
   // 피드 삭제
   async remove(id: string): Promise<Feed> {
-    try{
+    try {
       let f = await this.feedModel.findById(id);
-      if(f.get('deletedAt') === undefined) {
+      if (f.get('deletedAt') === undefined) {
         f.set('deletedAt', Date.now());
         return this.feedModel.findByIdAndUpdate(id, f, { new: true });
       } else {
         throw new Error('Feed already deleted');
       }
-    } catch(e) {
+    } catch (e) {
       return e;
     }
   }
@@ -62,11 +62,11 @@ export class FeedService {
   }
 
   // 피드 좋아요
-  async like(feed_id: string, user_id: string){
-    try{
+  async like(feed_id: string, user_id: string) {
+    try {
       let l = new this.likeModel({ feed_id: feed_id, user_id: user_id });
       l.save();
-    } catch(e) {
+    } catch (e) {
       return e;
     }
   }
@@ -79,5 +79,10 @@ export class FeedService {
   // 좋아요 수 조회
   async countLikes(feed_id: string): Promise<number> {
     return this.likeModel.countDocuments({ feed_id: feed_id });
+  }
+
+  // 유저별 피드 조회
+  async findByUser(user_id: string): Promise<Feed[]> {
+    return this.feedModel.find({ user_id: user_id }).where('deletedAt').equals(undefined).populate('user_id');
   }
 }
