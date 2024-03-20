@@ -4,8 +4,11 @@ import { ObjectId } from "mongoose";
 
 export class CreateCommentDto {
 
-  // @IsNotEmpty()
+  @IsNotEmpty()
   readonly user_id: ObjectId;
+
+  @IsNotEmpty()
+  readonly feed_id: ObjectId;
 
   @IsNotEmpty()
   @IsString()
