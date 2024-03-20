@@ -5,10 +5,11 @@ import { Feed, FeedDocument } from '../schemas/feed.schema';
 import { Like, LikeDocument } from '../schemas/like.schema';
 import { CreateFeedDto } from '../Dto/createFeed.dto';
 import { UpdateFeedDto } from '../Dto/updateFeed.dto';
+import { User, UserDocument } from 'src/schemas/user.schema';
 
 @Injectable()
 export class FeedService {
-  constructor(@InjectModel(Feed.name) private feedModel: Model<FeedDocument>, @InjectModel(Like.name) private likeModel: Model<LikeDocument>) { }
+  constructor(@InjectModel(Feed.name) private feedModel: Model<FeedDocument>, @InjectModel(Like.name) private likeModel: Model<LikeDocument>, @InjectModel(User.name) private userModel : Model<UserDocument>) { }
 
   // 피드 생성
   async create(feed: CreateFeedDto): Promise<Feed> {
@@ -53,7 +54,12 @@ export class FeedService {
 
   // 피드 검색
   async search(keyword: string): Promise<Feed[]> {
-    return this.feedModel.find({ title: { $regex: keyword } });
+    return this.feedModel.find({
+      $or: [
+        { title: { $regex: keyword } },
+        { content: { $regex: keyword } },
+      ]
+    });
   }
 
   // 해당 유저가 좋아요를 했는지 여부 확인
