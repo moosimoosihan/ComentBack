@@ -18,6 +18,9 @@ export class Post {
   @Prop()
   content: string;
 
+  @Prop()
+  about:string;
+
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Comment' }] })
   comments: Types.ObjectId[];
 }
