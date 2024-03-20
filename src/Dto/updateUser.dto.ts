@@ -1,7 +1,13 @@
-import { IsDate, IsEmail, IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsString } from "class-validator";
 
 export class UpdateUserDto {
   @IsNotEmpty()
   @IsString()
-  readonly about: string;
+  about: string;
+}
+
+export class UpdateNicknameDto {
+  @IsNotEmpty()
+  @IsString()
+  nickname: string;
 }
