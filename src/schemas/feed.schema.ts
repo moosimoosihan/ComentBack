@@ -28,8 +28,8 @@ export class Feed {
   @Prop()
   deletedAt: Date;
 
-  @Prop({ type: [CommentSchema] })
-  comments: Comment[];
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Comment' }] }) // Comment 스키마와의 관계 설정
+  comment: Comment[];
 
 }
 
