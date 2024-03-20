@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Header, HttpStatus, Post, Query, Req, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { LoginService } from './login.service';
+import { userInfo } from 'os';
 
 @Controller('login')
 export class LoginController {
@@ -27,6 +28,12 @@ export class LoginController {
   @Post('userInfo')
   async getUserInfo(@Req() req, @Res() res:Response) {
     const user = await this.loginService.getUserInfo(req.body.token);
+    res.send(user);
+  }
+
+  @Get('userInfo/:user_id')
+  async getUserInfoById(@Req() req, @Res() res:Response) {
+    const user = await this.loginService.getUserInfo(req.params.user_id);
     res.send(user);
   }
 }

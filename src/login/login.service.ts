@@ -47,5 +47,9 @@ export class LoginService {
   async getUserInfo(token: string): Promise<UserDocument> {
     return this.userModel.findOne({ _id: token });
   }
+
+  async getUserInfoById(user_id: string): Promise<UserDocument> {
+    return this.userModel.findOne({ _id: user_id });
+  }
 }
 
