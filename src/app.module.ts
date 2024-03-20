@@ -15,7 +15,7 @@ import { User, UserSchema } from './schemas/user.schema';
 import { Post, PostSchema } from './mypage/schemas/mypage.schema';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Feed.name, schema: FeedSchema}, {name: Like.name, schema: LikeSchema},{name:User.name,schema:UserSchema},{name:Post.name,schema:PostSchema}]), MongooseModule.forRoot('mongodb://ezen:1234@localhost:27017/?authMechanism=DEFAULT')],
+  imports: [MongooseModule.forFeature([{ name: Feed.name, schema: FeedSchema}, {name: Like.name, schema: LikeSchema},{name:User.name,schema:UserSchema},{name:Post.name,schema:PostSchema}]), MongooseModule.forRoot('mongodb://127.0.0.1:27017/coment')],
   controllers: [AppController, FeedController, PostsController, LoginController],
   providers: [AppService, FeedService, PostsService, LoginService],
 })
