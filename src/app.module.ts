@@ -13,10 +13,20 @@ import { Feed, FeedSchema } from './schemas/feed.schema';
 import { Like, LikeSchema } from './schemas/like.schema';
 import { User, UserSchema } from './schemas/user.schema';
 import { Post, PostSchema } from './mypage/schemas/mypage.schema';
+import { CommentController } from './comment/comment.controller';
+import { CommentService } from './comment/comment.service';
+import { Comment, CommentSchema } from './schemas/comment.schema';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Feed.name, schema: FeedSchema }, { name: Like.name, schema: LikeSchema }, { name: User.name, schema: UserSchema }, { name: Post.name, schema: PostSchema }]), MongooseModule.forRoot('mongodb://localhost:27017/coment')],
-  controllers: [AppController, FeedController, MypageController, LoginController],
-  providers: [AppService, FeedService, MypageService, LoginService],
+  imports: [MongooseModule.forFeature([
+    { name: Feed.name, schema: FeedSchema },
+    { name: Like.name, schema: LikeSchema },
+    { name: User.name, schema: UserSchema },
+    { name: Post.name, schema: PostSchema },
+    { name: Comment.name, schema: CommentSchema }]),
+  MongooseModule.forRoot('mongodb://127.0.0.1/coment')
+  ],
+  controllers: [AppController, FeedController, MypageController, LoginController, CommentController],
+  providers: [AppService, FeedService, MypageService, LoginService, CommentService],
 })
 export class AppModule { }

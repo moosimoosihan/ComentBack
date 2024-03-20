@@ -7,10 +7,10 @@ export type CommentDocument = Comment & Document;
 export class Comment {
 
   @Prop()
-  user_id: String;
+  user_id: string;
 
-  @Prop({required: true})
-  content: String;
+  @Prop()
+  comment: string;
 
   @Prop({default: Date.now})
   createdAt: Date;
