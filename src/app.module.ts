@@ -24,7 +24,7 @@ import { Comment, CommentSchema } from './schemas/comment.schema';
     { name: User.name, schema: UserSchema },
     { name: Post.name, schema: PostSchema },
     { name: Comment.name, schema: CommentSchema }]),
-  MongooseModule.forRoot('mongodb://127.0.0.1/coment')
+    MongooseModule.forRoot('mongodb://mosica:1234@localhost:27017/?authMechanism=DEFAULT')
   ],
   controllers: [AppController, FeedController, MypageController, LoginController, CommentController],
   providers: [AppService, FeedService, MypageService, LoginService, CommentService],
