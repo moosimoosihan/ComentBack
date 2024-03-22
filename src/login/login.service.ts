@@ -90,6 +90,47 @@ export class LoginService {
     return user.save();
   }
 
+  async googleLogin(code: string, clientId: string, clientSecret: string, redirectUri: string): Promise<UserDocument> {
+    const tokenConfig = {
+      code: code,
+      client_id: clientId,
+      client_secret: clientSecret,
+      redirect_uri: redirectUri,
+      grant_type: 'authorization_code',
+    };
+    const tokenParams = new URLSearchParams(tokenConfig).toString();
+    const tokenHeaders = {
+      'Content-type': 'application/x-www-form-urlencoded',
+    };
+    const tokenUrl = 'https://oauth2.googleapis.com/token';
+
+    const user = await axios.post(tokenUrl, tokenParams, { headers: tokenHeaders }).then(async (res) => {
+      const userInfoUrl = 'https://www.googleapis.com/oauth2/v2/userinfo';
+      const userInfoHeaders = {
+        Authorization: `Bearer ${res.data.access_token}`,
+      };
+      const { data } = await firstValueFrom(
+        from(axios.get(userInfoUrl, { headers: userInfoHeaders })),
+      );
+      return data;
+    });
+
+    return this.logins(user);
+  }
+
+  async logins(data: any): Promise<UserDocument> {
+    // 만약 가입된 유저라면 해당 유저를 반환
+    let user = await this.userModel.findOne({ email: data.email });
+    if (user) return user;
+    // Google에서 제공하는 사용자 정보를 기반으로 새로운 유저 데이터 생성
+    user = new this.userModel({
+      email: data.email,
+      nickname: data.name,
+      socialType: 'google',
+    });
+    return user.save();
+  }
+
   async getUserInfo(token: string): Promise<UserDocument> {
     return this.userModel.findOne({ _id: token });
   }
