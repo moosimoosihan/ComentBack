@@ -14,7 +14,6 @@ export class FeedController {
   // 피드 생성
   @Post()
   async create(@Body() feed: CreateFeedDto, @Res() res: Response): Promise<Feed> {
-    console.log(feed);
     const createdFeed = this.feedService.create(feed);
     res.location('http://localhost:3000/');
     res.status(HttpStatus.FOUND).send();

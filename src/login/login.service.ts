@@ -72,7 +72,6 @@ export class LoginService {
         socialType: 'naver',
       });
       await user.save();
-      console.log(user)
     }
     return user;
   }
