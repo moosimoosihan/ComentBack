@@ -39,14 +39,21 @@ export class LoginService {
   async login(data: any) : Promise<UserDocument> {
     // 만약 가입된 유저라면 해당 유저를 반환
     let user = await this.userModel.findOne({ email: data.kakao_account.email, socialType: 'kakao' });
-    if (user) return user;
+    if (!user) {
     user = new this.userModel({
       email: data.kakao_account.email,
       nickname: data.kakao_account.profile.nickname,
       socialType: 'kakao',
     });
-    return user.save();
+    await user.save();
+
+    const _idStr = user._id.toString(); // ObjectId를 문자열로 변환
+    const nicknameWithId = `${user.nickname}#${_idStr.slice(-5)}`; // 뒤에서 5글자 추출하여 닉네임에 추가
+    user.nickname = nicknameWithId; // 닉네임 업데이트
+    await user.save(); // 변경된 닉네임으로 다시 저장
   }
+  return user;
+}
 
   async naverLogin(clientId: string, clientSecret: string, code: string): Promise<UserDocument> {
     // 네이버 OAuth 인증을 위한 설정
@@ -86,6 +93,11 @@ export class LoginService {
         socialType: 'naver',
       });
       await user.save();
+
+      const _idStr = user._id.toString(); // ObjectId를 문자열로 변환
+      const nicknameWithId = `${user.nickname}#${_idStr.slice(-5)}`; // 뒤에서 5글자 추출하여 닉네임에 추가
+      user.nickname = nicknameWithId; // 닉네임 업데이트
+      await user.save(); // 변경된 닉네임으로 다시 저장
     }
     return user;
   }
@@ -121,15 +133,22 @@ export class LoginService {
   async logins(data: any): Promise<UserDocument> {
     // 만약 가입된 유저라면 해당 유저를 반환
     let user = await this.userModel.findOne({ email: data.email, socialType:'google' });
-    if (user) return user;
+    if (!user) {
     // Google에서 제공하는 사용자 정보를 기반으로 새로운 유저 데이터 생성
     user = new this.userModel({
       email: data.email,
       nickname: data.name,
       socialType: 'google',
     });
-    return user.save();
+    await user.save();
+
+    const _idStr = user._id.toString(); // ObjectId를 문자열로 변환
+    const nicknameWithId = `${user.nickname}#${_idStr.slice(-5)}`; // 뒤에서 5글자 추출하여 닉네임에 추가
+    user.nickname = nicknameWithId; // 닉네임 업데이트
+    await user.save(); // 변경된 닉네임으로 다시 저장
   }
+  return user;
+}
 
   async getUserInfo(token: string): Promise<UserDocument> {
     return this.userModel.findOne({ _id: token });
