@@ -92,8 +92,8 @@ export class FeedService {
 
   // 피드 좋아요 취소
   async unlike(feed_id: string, user_id: string, like_id:string) {
-    const feed = await this.removeLikeFromFeed(feed_id, like_id);
-    return await this.likeModel.deleteMany({ feed_id: feed._id, user_id: user_id });
+    await this.removeLikeFromFeed(feed_id, like_id);
+    return await this.likeModel.findOneAndDelete({ feed_id: feed_id, user_id: user_id })
   }
 
   async removeLikeFromFeed(feed_id: string, like_id: string) {

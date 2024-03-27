@@ -29,7 +29,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     { name: User.name, schema: UserSchema },
     { name: Mypage.name, schema: MypageSchema },
     { name: Comment.name, schema: CommentSchema }]),
-  MongooseModule.forRoot('mongodb://localhost:27017/coment')
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGODB_URL'),
+      }),
+      inject: [ConfigService],
+    }),
   ],
   controllers: [AppController, FeedController, MypageController, LoginController, CommentController],
   providers: [AppService, FeedService, MypageService, LoginService, CommentService],
