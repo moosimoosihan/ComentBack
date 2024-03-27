@@ -16,9 +16,14 @@ import { Mypage, MypageSchema } from './mypage/schemas/mypage.schema';
 import { CommentController } from './comment/comment.controller';
 import { CommentService } from './comment/comment.service';
 import { Comment, CommentSchema } from './schemas/comment.schema';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
-  imports: [MongooseModule.forFeature([
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    MongooseModule.forFeature([
     { name: Feed.name, schema: FeedSchema },
     { name: Like.name, schema: LikeSchema },
     { name: User.name, schema: UserSchema },

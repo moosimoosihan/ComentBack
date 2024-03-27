@@ -36,6 +36,18 @@ export class LoginService {
     return this.login(data);
   }
 
+  async login(data: any) : Promise<UserDocument> {
+    // 만약 가입된 유저라면 해당 유저를 반환
+    let user = await this.userModel.findOne({ email: data.kakao_account.email, socialType: 'kakao' });
+    if (user) return user;
+    user = new this.userModel({
+      email: data.kakao_account.email,
+      nickname: data.kakao_account.profile.nickname,
+      socialType: 'kakao',
+    });
+    return user.save();
+  }
+
   async naverLogin(clientId: string, clientSecret: string, code: string): Promise<UserDocument> {
     // 네이버 OAuth 인증을 위한 설정
    const config = {
@@ -62,9 +74,11 @@ export class LoginService {
     };
     const userInfoResponse = await axios.get(userInfoUrl, { headers: userInfoHeaders });
     const userData = userInfoResponse.data;
-
+    return this.loginn(userData);  
+  }
+    async loginn(userData : any) : Promise<UserDocument> {
     // 네이버 유저 정보를 사용하여 유저 생성 또는 조회
-    let user = await this.userModel.findOne({ email: userData.response.email });
+    let user = await this.userModel.findOne({ email: userData.response.email, socialType: 'naver' });
     if (!user) {
       user = new this.userModel({
         email: userData.response.email,
@@ -76,16 +90,43 @@ export class LoginService {
     return user;
   }
 
-  async login(data: any): Promise<UserDocument> {
-    // 만약 가입된 유저라면 해당 유저를 반환
-    let user = await this.userModel.findOne({ email: data.kakao_account?.email || data.response.email });
-    if (user) return user;
+  async googleLogin(code: string, clientId: string, clientSecret: string, redirectUri: string): Promise<UserDocument> {
+    const tokenConfig = {
+      code: code,
+      client_id: clientId,
+      client_secret: clientSecret,
+      redirect_uri: redirectUri,
+      grant_type: 'authorization_code',
+    };
+    const tokenParams = new URLSearchParams(tokenConfig).toString();
+    const tokenHeaders = {
+      'Content-type': 'application/x-www-form-urlencoded',
+    };
+    const tokenUrl = 'https://oauth2.googleapis.com/token';
 
-    // 유저가 가입되지 않았다면 새로운 유저를 생성하여 반환
+    const user = await axios.post(tokenUrl, tokenParams, { headers: tokenHeaders }).then(async (res) => {
+      const userInfoUrl = 'https://www.googleapis.com/oauth2/v2/userinfo';
+      const userInfoHeaders = {
+        Authorization: `Bearer ${res.data.access_token}`,
+      };
+      const { data } = await firstValueFrom(
+        from(axios.get(userInfoUrl, { headers: userInfoHeaders })),
+      );
+      return data;
+    });
+
+    return this.logins(user);
+  }
+
+  async logins(data: any): Promise<UserDocument> {
+    // 만약 가입된 유저라면 해당 유저를 반환
+    let user = await this.userModel.findOne({ email: data.email, socialType:'google' });
+    if (user) return user;
+    // Google에서 제공하는 사용자 정보를 기반으로 새로운 유저 데이터 생성
     user = new this.userModel({
-      email: data.kakao_account?.email || data.response.email,
-      nickname: data.kakao_account?.profile.nickname || data.response.nickname,
-      socialType: data.kakao_account ? 'kakao' : 'naver',
+      email: data.email,
+      nickname: data.name,
+      socialType: 'google',
     });
     return user.save();
   }

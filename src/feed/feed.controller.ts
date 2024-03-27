@@ -27,9 +27,9 @@ export class FeedController {
   }
 
   // 특정 피드 조회
-  @Get('/:user_id')
-  async findOne(@Param('user_id') userId: string): Promise<Feed> {
-    return this.feedService.findOne(userId);
+  @Get('/:feed_id')
+  async findOne(@Param('feed_id') feed_id: string): Promise<Feed> {
+    return this.feedService.findOne(feed_id);
   }
 
   // 피드 수정
