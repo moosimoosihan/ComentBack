@@ -1,14 +1,12 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
-import { CommentSchema } from "./comment.schema";
+import { Comment } from "./comment.schema";
+import { User } from "./user.schema";
 
 export type FeedDocument = Feed & Document;
 
 @Schema()
 export class Feed {
-
-  @Prop({type:Types.ObjectId,ref:'User'})
-  user_id: Types.ObjectId;
 
   @Prop()
   title: String;
@@ -28,8 +26,11 @@ export class Feed {
   @Prop()
   deletedAt: Date;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Comment' }] }) // Comment 스키마와의 관계 설정
-  comment: Comment[];
+  @Prop({ type: Types.ObjectId, ref:'User' })
+  user_id: Types.ObjectId | User;
+
+  @Prop({ type: [Types.ObjectId], ref:'Comment' }) // Comment 스키마와의 관계 설정
+  comments: (Types.ObjectId | Comment)[];
 
 }
 

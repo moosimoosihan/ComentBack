@@ -24,7 +24,9 @@ export class FeedService {
 
   // 특정 피드 조회
   async findOne(id: string): Promise<Feed> {
-    return await this.feedModel.findById(id).populate('user_id');
+    return await this.feedModel.findById(id)
+      .populate('user_id')
+      .populate('comments');
   }
 
   // 피드 수정
