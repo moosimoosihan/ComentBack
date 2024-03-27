@@ -3,6 +3,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../schemas/user.schema';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import * as multer from 'multer';
 
 @Injectable()
 export class MypageService {
@@ -37,8 +40,35 @@ export class MypageService {
     async updateNickname(userId: string, nickname: string): Promise<User> {
         const updatedUser = await this.userModel.findByIdAndUpdate(userId, { nickname }, { new: true });
         if (!updatedUser) {
-          throw new Error('User not found');
+            throw new Error('User not found');
         }
         return updatedUser;
-      }
+    }
+
+    //이미지 업로드
+    async uploadImage(file) {
+        return new Promise((resolve, reject) => {
+            const randomName = Array(32)
+                .fill(null)
+                .map(() => (Math.round(Math.random() * 16)).toString(16))
+                .join('');
+
+            const storage = diskStorage({
+                destination: './uploads',
+                filename: (req, file, cb) => {
+                    cb(null, `${randomName}${extname(file.originalname)}`);
+                },
+            });
+
+            const upload = multer({ storage }).single('image');
+            console.log(storage);
+
+            upload(file, null, (error) => {
+                if (error) {
+                    return reject(error);
+                }
+                resolve({ imageUrl: file.path });
+            });
+        });
+    }
 }
