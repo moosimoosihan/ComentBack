@@ -71,17 +71,51 @@ export class FeedService {
 
   // 피드 좋아요
   async like(feed_id: string, user_id: string) {
-    try {
-      let l = new this.likeModel({ feed_id: feed_id, user_id: user_id });
-      l.save();
-    } catch (e) {
-      return e;
+    let l = new this.likeModel({ feed_id: feed_id, user_id: user_id });
+    return await l.save();
+  }
+
+  async addLikeToFeed(feed_id: string, like_id: string) {
+    const feed = await this.feedModel.findById(feed_id);
+    if (!feed) {
+      throw new Error('Feed not found');
     }
+
+    const like = await this.likeModel.findById(like_id);
+    if (!like) {
+      throw new Error('Like not found');
+    }
+
+    feed.likes.push(like._id);
+    return await feed.save();
   }
 
   // 피드 좋아요 취소
-  async unlike(feed_id: string, user_id: string) {
-    await this.likeModel.deleteMany({ feed_id: feed_id, user_id: user_id });
+  async unlike(feed_id: string, user_id: string, like_id:string) {
+    const feed = await this.removeLikeFromFeed(feed_id, like_id);
+    return await this.likeModel.deleteMany({ feed_id: feed._id, user_id: user_id });
+  }
+
+  async removeLikeFromFeed(feed_id: string, like_id: string) {
+    const feed = await this.feedModel.findById(feed_id);
+    if (!feed) {
+      throw new Error('Feed not found');
+    }
+
+    const like = await this.likeModel.findById(like_id);
+    if (!like) {
+      throw new Error('Like not found');
+    }
+
+    const index = feed.likes.indexOf(like._id);
+    if (index > -1) {
+      feed.likes.splice(index, 1);
+    }
+    return await feed.save();
+  }
+
+  async findLike(feed_id: string, user_id: string) {
+    return this.likeModel.findOne({ feed_id: feed_id, user_id: user_id });
   }
 
   // 좋아요 수 조회
@@ -92,5 +126,10 @@ export class FeedService {
   // 유저별 피드 조회
   async findByUser(user_id: string): Promise<Feed[]> {
     return this.feedModel.find({ user_id: user_id }).where('deletedAt').equals(undefined).populate('user_id');
+  }
+
+  // 피드 좋아요 갯수가 높은 순으로 조회
+  async getPopularFeed(): Promise<Feed[]> {
+    return this.feedModel.find().sort({ likes: -1 }).where('deletedAt').equals(undefined).populate('user_id');
   }
 }

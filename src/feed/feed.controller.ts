@@ -53,6 +53,7 @@ export class FeedController {
   // 카테고리별 피드 조회
   @Get('/category/:category')
   async findByCategory(@Param('category') category: string): Promise<Feed[]> {
+    if(category === 'Popular') return this.feedService.getPopularFeed();
     return this.feedService.findByCategory(category);
   }
 
@@ -71,13 +72,16 @@ export class FeedController {
   // 피드 좋아요
   @Post('/like/:feed_id/:user_id')
   async like(@Param('feed_id') feed_id: string, @Param('user_id') user_id: string) {
-    this.feedService.like(feed_id, user_id);
+    const l = await this.feedService.like(feed_id, user_id);
+    await this.feedService.addLikeToFeed(feed_id, l._id);
+    return l;
   }
 
   // 피드 좋아요 취소
   @Post('/unlike/:feed_id/:user_id')
   async unlike(@Param('feed_id') feed_id: string, @Param('user_id') user_id: string) {
-    this.feedService.unlike(feed_id, user_id);
+    const l = await this.feedService.findLike(feed_id, user_id);
+    await this.feedService.unlike(feed_id, user_id, l._id);
   }
 
   // 좋아요 수 조회

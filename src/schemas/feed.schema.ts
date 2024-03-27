@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 import { Comment } from "./comment.schema";
 import { User } from "./user.schema";
+import { Like } from "./like.schema";
 
 export type FeedDocument = Feed & Document;
 
@@ -32,6 +33,8 @@ export class Feed {
   @Prop({ type: [Types.ObjectId], ref:'Comment' }) // Comment 스키마와의 관계 설정
   comments: (Types.ObjectId | Comment)[];
 
+  @Prop({ type: [Types.ObjectId], ref:'Like' })
+  likes: (Types.ObjectId | Like)[];
 }
 
 export const FeedSchema = SchemaFactory.createForClass(Feed);
